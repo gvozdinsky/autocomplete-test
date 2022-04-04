@@ -1,0 +1,42 @@
+.wrapper {
+  position: relative;
+  max-width: 400px;
+}
+
+.input {
+  width: 100%;
+  padding: 8px 4px;
+}
+
+.options {
+  position: absolute;
+  width: 100%;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid gray;
+  z-index: 10;
+  background-color: white;
+}
+
+.option {
+  padding: 5px 10px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: yellow;
+  }
+}
+
+.selected {
+  background-color: yellow
+}
+
+.empty {
+  padding: 5px 10px;
+}
+
+.highlight {
+  background-color: orange;
+  font-weight: bold;
+}
