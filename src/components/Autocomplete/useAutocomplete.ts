@@ -1,16 +1,22 @@
 import { useEffect, useRef, useState } from "react";
+import { useDebouncedValue } from "../../hooks";
 import { OptionsType } from "./types";
 
-export default function useAutocomplete({
-  loadOptions,
-}: {
+type Params = {
   loadOptions?: ({
     inputValue,
   }: {
     inputValue: string;
   }) => Promise<OptionsType>;
-} = {}) {
+  debounceDelay?: number;
+};
+
+export default function useAutocomplete({
+  loadOptions,
+  debounceDelay = 1000,
+}: Params = {}) {
   const [inputValue, setInputValue] = useState("");
+  const debouncedInputValue = useDebouncedValue(inputValue, debounceDelay);
   const [isLoading, setIsLoading] = useState(false);
   const [options, setOptions] = useState<OptionsType>([]);
   const loadOptionsRef = useRef(loadOptions);
@@ -21,7 +27,7 @@ export default function useAutocomplete({
     }
 
     let didCancel = false;
-    if (inputValue.length === 0) {
+    if (debouncedInputValue.length === 0) {
       setOptions([]);
       return;
     }
@@ -29,7 +35,9 @@ export default function useAutocomplete({
     async function run() {
       if (loadOptionsRef?.current) {
         setIsLoading(true);
-        const items = await loadOptionsRef.current({ inputValue });
+        const items = await loadOptionsRef.current({
+          inputValue: debouncedInputValue,
+        });
         if (!didCancel) {
           setOptions(items);
         }
@@ -42,7 +50,7 @@ export default function useAutocomplete({
     return () => {
       didCancel = true;
     };
-  }, [inputValue]);
+  }, [debouncedInputValue]);
 
   function onInputChange(value: string) {
     setInputValue(value);

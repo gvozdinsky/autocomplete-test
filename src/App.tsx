@@ -19,6 +19,7 @@ function App() {
       const users = await fetchUsersFromServerByName(inputValue);
       return users.map((user) => ({ label: user.name, value: user.name }));
     },
+    debounceDelay: 300,
   });
 
   const { inputProps: inputPropsLocal } = useAutocomplete();
